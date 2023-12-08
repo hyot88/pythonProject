@@ -16,7 +16,7 @@ if profile == 'local':
     db_user = 'hmuser'
     db_password = 'hmuserdb'
     db_target = ['label_craft']
-    backup_path = '/Users/kakao_ent/temp'
+    backup_path = '/Users/kakao_ent/temp/backup'
 else:
     db_host = 'search-hammer-opdb2.dakao.io'
     db_port = '3306'
