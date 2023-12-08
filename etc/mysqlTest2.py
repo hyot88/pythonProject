@@ -22,7 +22,7 @@ else:
     db_port = '3306'
     db_user = 'hmuser'
     db_password = 'hmuserdb'
-    target_db = ['arbiter', 'dsat', 'ringer', 'stormbreaker', 'sven', 'wasp']
+    db_target = ['arbiter', 'dsat', 'ringer', 'stormbreaker', 'sven', 'wasp']
     backup_path = '/hanmail/working/hyot'
 
 try:
