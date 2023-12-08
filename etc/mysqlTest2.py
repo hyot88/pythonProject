@@ -23,11 +23,11 @@ else:
     db_user = 'hmuser'
     db_password = 'hmuserdb'
     db_target = ['arbiter', 'dsat', 'ringer', 'stormbreaker', 'sven', 'wasp']
-    backup_path = '/hanmail/working/hyot'
+    backup_path = '/hanmail/working/hyot/backup'
 
 try:
     for db in db_target:
-        backup_file = f"{backup_path}/backup_{db}_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.sql"
+        backup_file = f"{backup_path}/{db}_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.sql"
         result = subprocess.run(["mysqldump", "--no-tablespaces", f"--host={db_host}", f"--port={db_port}", f"--user={db_user}",
                                  f"--password={db_password}", db, f"--result-file={backup_file}"])
         print(f"처리 결과: {result}")
