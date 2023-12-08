@@ -25,8 +25,14 @@ else:
     target_db = ['arbiter', 'dsat', 'ringer', 'stormbreaker', 'sven', 'wasp']
     backup_path = '/hanmail/working/hyot'
 
-for db in db_target:
-    backup_file = f"{backup_path}/backup_{db}_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.sql"
-    subprocess.run(["mysqldump", "--no-tablespaces", f"--host={db_host}", f"--port={db_port}", f"--user={db_user}",
-                    f"--password={db_password}", db, f"--result-file={backup_file}"])
-    print(f"{db} 백업이 완료되었습니다.")
+try:
+    for db in db_target:
+        backup_file = f"{backup_path}/backup_{db}_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.sql"
+        result = subprocess.run(["mysqldump", "--no-tablespaces", f"--host={db_host}", f"--port={db_port}", f"--user={db_user}",
+                                 f"--password={db_password}", db, f"--result-file={backup_file}"])
+        print(f"처리 결과: {result}")
+        print(f"{db} 백업이 완료되었습니다.")
+except Exception as e:
+    print(e)
+finally:
+    print("DB 백업 스크립트를 종료합니다.")
