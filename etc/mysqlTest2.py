@@ -19,18 +19,25 @@ if profile == 'local':
     db_password = 'hmuserdb'
     db_target = ['label_craft']
     backup_path = '/Users/kakao_ent/temp/backup'
+    backup_target_path = ''
 else:
     db_host = 'search-hammer-opdb2.dakao.io'
     db_port = '3306'
     db_user = 'hmuser'
     db_password = 'hmuserdb'
-    db_target = ['arbiter', 'dsat', 'ringer', 'stormbreaker', 'sven', 'wasp']
+    # db_target = ['arbiter', 'dsat', 'ringer', 'stormbreaker', 'sven', 'wasp']
+    db_target = ['arbiter', 'dsat']
     backup_path = '/hanmail/working/hyot/backup'
+    backup_target_path = '/backup'
+
+# todo: 날짜 가져오는 중복 코드 변경 필요
+today = datetime.datetime.now().strftime('%Y%m%d')
 
 try:
-    today = datetime.datetime.now().strftime('%Y%m%d')
     backup_path = f"{backup_path}/{today}"
     os.mkdir(backup_path)
+    backup_target_path = f"{backup_target_path}/{today}"
+    subprocess.run(["hadoop", "fs", "-mkdir", backup_target_path])
 except FileExistsError as e:
     pass
 finally:
@@ -40,7 +47,7 @@ finally:
             backup_ori_file = backup_file_name + '.sql'
             backup_gzip_file = backup_ori_file + '.gz'
 
-            result = subprocess.run(
+            subprocess.run(
                 ["mysqldump", "--no-tablespaces", f"--host={db_host}", f"--port={db_port}", f"--user={db_user}",
                  f"--password={db_password}", db, f"--result-file={backup_ori_file}"])
 
@@ -51,7 +58,9 @@ finally:
 
             os.remove(backup_ori_file)
 
-            print(f"처리 결과: {result}")
+            if profile != 'local':
+                subprocess.run(["hadoop", "fs", "-put", backup_gzip_file, backup_target_path])
+
             print(f"{db} 백업이 완료되었습니다.")
     except Exception as e:
         print(e)
