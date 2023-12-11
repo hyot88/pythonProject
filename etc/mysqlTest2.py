@@ -2,6 +2,8 @@ import subprocess
 import datetime
 import gzip
 import os
+import re
+import shutil
 
 profile = 'local'
 
@@ -10,7 +12,8 @@ db_port = ''
 db_user = ''
 db_password = ''
 db_target = []
-backup_path = ''
+path_temp_backup = ''
+path_upload = ''
 
 if profile == 'local':
     db_host = '127.0.0.1'
@@ -18,8 +21,8 @@ if profile == 'local':
     db_user = 'hmuser'
     db_password = 'hmuserdb'
     db_target = ['label_craft']
-    backup_path = '/Users/kakao_ent/temp/backup'
-    backup_target_path = ''
+    path_temp_backup = '/Users/kakao_ent/temp/backup_temp'
+    path_upload = '/Users/kakao_ent/temp/upload'
 else:
     db_host = 'search-hammer-opdb2.dakao.io'
     db_port = '3306'
@@ -27,42 +30,48 @@ else:
     db_password = 'hmuserdb'
     # db_target = ['arbiter', 'dsat', 'ringer', 'stormbreaker', 'sven', 'wasp']
     db_target = ['arbiter', 'dsat']
-    backup_path = '/hanmail/working/hyot/backup'
-    backup_target_path = '/backup'
+    path_temp_backup = '/hanmail/working/hyot/backup_temp'
+    path_upload = '/backup'
 
-# todo: 날짜 가져오는 중복 코드 변경 필요
-today = datetime.datetime.now().strftime('%Y%m%d')
+today_datetime = datetime.datetime.now()
+today_str = today_datetime.strftime('%Y%m%d')
 
 try:
-    backup_path = f"{backup_path}/{today}"
-    os.mkdir(backup_path)
-    backup_target_path = f"{backup_target_path}/{today}"
-    subprocess.run(["hadoop", "fs", "-mkdir", backup_target_path])
-except FileExistsError as e:
-    pass
+    for db in db_target:
+        file_backup_name = f"{path_temp_backup}/{db}_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}"
+        file_backup_ori = file_backup_name + '.sql'
+        file_backup_gzip = file_backup_ori + '.gz'
+
+        subprocess.run(
+            ["mysqldump", "--no-tablespaces", f"--host={db_host}", f"--port={db_port}", f"--user={db_user}",
+             f"--password={db_password}", db, f"--result-file={file_backup_ori}"])
+
+        with open(file_backup_ori, 'r') as f_ori:
+            data = f_ori.read()
+            with gzip.open(file_backup_gzip, 'wb') as f_gzip:
+                f_gzip.write(data.encode("utf-8"))
+
+        os.remove(file_backup_ori)
+
+        if profile == 'local':
+            folderList = os.listdir(path_upload)
+            folderList = list(filter(lambda x: re.compile("[0-9]{8}").match(x), folderList))
+
+            for folder in folderList:
+                td = (datetime.datetime(today_datetime.year, today_datetime.month, today_datetime.day)
+                      - datetime.datetime.strptime(folder, '%Y%m%d'))
+
+                if td.days > 21:
+                    shutil.rmtree(f"{path_upload}/{folder}")
+        else:
+            subprocess.run(["hadoop", "fs", "-mkdir", f"{path_upload}/{today_str}"])
+            subprocess.run(["hadoop", "fs", "-put", file_backup_gzip, f"{path_upload}/{today_str}"])
+            os.remove(file_backup_gzip)
+            # 하둡 폴더 리스트 가져오기
+            # 하둡 폴더 삭제하기
+
+    print("DB 백업이 완료되었습니다.")
+except Exception as e:
+    print(e)
 finally:
-    try:
-        for db in db_target:
-            backup_file_name = f"{backup_path}/{db}_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}"
-            backup_ori_file = backup_file_name + '.sql'
-            backup_gzip_file = backup_ori_file + '.gz'
-
-            subprocess.run(
-                ["mysqldump", "--no-tablespaces", f"--host={db_host}", f"--port={db_port}", f"--user={db_user}",
-                 f"--password={db_password}", db, f"--result-file={backup_ori_file}"])
-
-            with open(backup_ori_file, 'r') as f_ori:
-                data = f_ori.read()
-                with gzip.open(backup_gzip_file, 'wb') as f_gzip:
-                    f_gzip.write(data.encode("utf-8"))
-
-            os.remove(backup_ori_file)
-
-            if profile != 'local':
-                subprocess.run(["hadoop", "fs", "-put", backup_gzip_file, backup_target_path])
-
-            print(f"{db} 백업이 완료되었습니다.")
-    except Exception as e:
-        print(e)
-    finally:
-        print("DB 백업 스크립트를 종료합니다.")
+    print("DB 백업 스크립트를 종료합니다.")
