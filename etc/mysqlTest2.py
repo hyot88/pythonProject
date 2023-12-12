@@ -18,6 +18,7 @@ today_datetime = ''
 today_str = ''
 
 
+# 변수 초기화
 def init(_profile):
     global db_host
     global db_port
@@ -51,6 +52,7 @@ def init(_profile):
         path_upload = '/backup'
 
 
+# 메인 함수
 def process():
     try:
         for db in db_target:
@@ -78,6 +80,7 @@ def process():
         print("DB 백업 스크립트를 종료합니다.")
 
 
+# 하둡 파일 업로드
 def upload(_file_backup_gzip):
     if profile != 'local':
         subprocess.run(["hadoop", "fs", "-mkdir", f"{path_upload}/{today_str}"], stdout=subprocess.DEVNULL)
@@ -85,6 +88,7 @@ def upload(_file_backup_gzip):
         os.remove(_file_backup_gzip)
 
 
+# 하둡 폴더 정리
 def folder_organize():
     if profile == 'local':
         folderList = os.listdir(path_upload)
