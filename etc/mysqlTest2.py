@@ -52,7 +52,7 @@ def init(_profile):
         path_upload = '/backup'
 
 
-# 메인 함수
+# 파일 백업 및 압축
 def process():
     try:
         for db in db_target:
@@ -118,3 +118,5 @@ def folder_organize():
 
 init(profile)
 process()
+folder_organize()
+
