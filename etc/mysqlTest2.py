@@ -82,7 +82,9 @@ def process():
 
 # 하둡 파일 업로드
 def upload(_file_backup_gzip):
-    if profile != 'local':
+    if profile == 'local':
+        pass
+    else:
         subprocess.run(["hadoop", "fs", "-mkdir", f"{path_upload}/{today_str}"], stdout=subprocess.DEVNULL)
         subprocess.run(["hadoop", "fs", "-put", _file_backup_gzip, f"{path_upload}/{today_str}"])
         os.remove(_file_backup_gzip)
