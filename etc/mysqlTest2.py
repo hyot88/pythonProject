@@ -86,8 +86,6 @@ def upload(_file_backup_gzip):
 
 
 def folder_organize():
-    global today_datetime
-
     if profile == 'local':
         folderList = os.listdir(path_upload)
         folderList = list(filter(lambda x: re.compile("[0-9]{8}").match(x), folderList))
