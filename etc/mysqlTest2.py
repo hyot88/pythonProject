@@ -46,8 +46,7 @@ def init(_profile):
         db_port = '3306'
         db_user = 'hmuser'
         db_password = 'hmuserdb'
-        # db_target = ['arbiter', 'dsat', 'ringer', 'stormbreaker', 'sven', 'wasp']
-        db_target = ['arbiter', 'dsat']
+        db_target = ['arbiter', 'dsat', 'ringer', 'stormbreaker', 'sven', 'wasp']
         path_temp_backup = '/hanmail/working/hyot/backup_temp'
         path_upload = '/backup'
 
@@ -85,7 +84,7 @@ def upload(_file_backup_gzip):
     if profile == 'local':
         pass
     else:
-        subprocess.run(["hadoop", "fs", "-mkdir", f"{path_upload}/{today_str}"], stdout=subprocess.DEVNULL)
+        subprocess.run(["hadoop", "fs", "-mkdir", f"{path_upload}/{today_str}"])
         subprocess.run(["hadoop", "fs", "-put", _file_backup_gzip, f"{path_upload}/{today_str}"])
         os.remove(_file_backup_gzip)
 
