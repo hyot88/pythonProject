@@ -40,7 +40,7 @@ def init(_profile):
         db_password = 'hmuserdb'
         db_target = ['label_craft']
         path_temp_backup = '/Users/kakao_ent/temp/backup_temp'
-        path_upload = '/Users/kakao_ent/temp/upload'
+        path_upload = '/Users/kakao_ent/temp/upload/db'
     else:
         db_host = 'search-hammer-opdb2.dakao.io'
         db_port = '3306'
@@ -48,7 +48,7 @@ def init(_profile):
         db_password = 'hmuserdb'
         db_target = ['arbiter', 'dsat', 'ringer', 'stormbreaker', 'sven', 'wasp']
         path_temp_backup = '/hanmail/working/hyot/backup_temp'
-        path_upload = '/backup'
+        path_upload = '/backup/db'
 
 
 # 파일 백업 및 압축
