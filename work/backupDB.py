@@ -72,13 +72,10 @@ def process():
 
             os.remove(file_backup_ori)
             upload(file_backup_gzip)
-            folder_organize()
 
-        print("DB 백업이 완료되었습니다.")
+        print("DB 백업 및 업로드가 완료되었습니다.")
     except Exception as e:
         print(e)
-    finally:
-        print("DB 백업 스크립트를 종료합니다.")
 
 
 # 하둡 파일 업로드
@@ -115,7 +112,10 @@ def folder_organize():
             if td.days > 21:
                 subprocess.run(["hadoop", "fs", "-rm", "-r", folder])
 
+    print("하둡 폴더 정리가 완료되었습니다.")
+
 
 init(profile)
 process()
 folder_organize()
+print("DB 백업 스크립트를 종료합니다.")
