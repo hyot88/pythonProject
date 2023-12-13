@@ -5,7 +5,7 @@ import os
 import re
 import shutil
 
-profile = 'local'
+profile = 'prod'
 
 db_host = ''
 db_port = ''
@@ -42,7 +42,7 @@ def init(_profile):
         path_temp_backup = '/Users/kakao_ent/temp/backup_temp'
         path_upload = '/Users/kakao_ent/temp/upload/db'
     else:
-        db_host = 'search-hammer-opdb2.dakao.io'
+        db_host = 'search-hammer-opdb1.dakao.io'
         db_port = '3306'
         db_user = 'hmuser'
         db_password = 'hmuserdb'
