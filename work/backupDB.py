@@ -84,6 +84,7 @@ def upload(_file_backup_gzip):
         pass
     else:
         subprocess.run(["hadoop", "fs", "-put", _file_backup_gzip, f"{path_upload}/{today_str}"])
+        print(f"{_file_backup_gzip} 업로드 완료")
         os.remove(_file_backup_gzip)
 
 
