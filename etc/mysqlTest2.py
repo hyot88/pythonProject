@@ -54,6 +54,8 @@ def init(_profile):
 # 파일 백업 및 압축
 def process():
     try:
+        subprocess.run(["hadoop", "fs", "-mkdir", f"{path_upload}/{today_str}"])
+
         for db in db_target:
             file_backup_name = f"{path_temp_backup}/{db}_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}"
             file_backup_ori = file_backup_name + '.sql'
@@ -84,7 +86,6 @@ def upload(_file_backup_gzip):
     if profile == 'local':
         pass
     else:
-        subprocess.run(["hadoop", "fs", "-mkdir", f"{path_upload}/{today_str}"])
         subprocess.run(["hadoop", "fs", "-put", _file_backup_gzip, f"{path_upload}/{today_str}"])
         os.remove(_file_backup_gzip)
 
