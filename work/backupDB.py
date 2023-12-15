@@ -101,7 +101,7 @@ def folder_organize():
             if td.days > 21:
                 shutil.rmtree(f"{path_upload}/{folder}")
     else:
-        result = subprocess.run(['hadoop', 'fs', '-ls', '-C', '/backup'], stdout=subprocess.PIPE, text=True)
+        result = subprocess.run(['hadoop', 'fs', '-ls', '-C', path_upload], stdout=subprocess.PIPE, text=True)
         folderList = result.stdout.split("\n")
         folderList = list(filter(lambda x: re.compile("/backup/[0-9]{8}").match(x), folderList))
 
