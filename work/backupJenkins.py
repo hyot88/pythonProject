@@ -67,6 +67,7 @@ def folder_organize():
             if td.days > 21:
                 shutil.rmtree(f"{path_upload}/{folder}")
     else:
+        # subprocess.run 함수에서 text 인자는 python 3.7 부터 지원, jenkins 서버는 3.6 사용하므로 다른 옵션으로 대체
         # result = subprocess.run(['hadoop', 'fs', '-ls', '-C', path_upload], stdout=subprocess.PIPE, text=True)
         result = subprocess.run(['hadoop', 'fs', '-ls', '-C', path_upload], stdout=subprocess.PIPE, universal_newlines=True)
         folderList = result.stdout.split("\n")
