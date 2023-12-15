@@ -4,7 +4,7 @@ import os
 import re
 import shutil
 
-profile = 'local'
+profile = 'prod'
 
 path_target = ''
 path_temp_backup = ''
@@ -37,7 +37,7 @@ def init(_profile):
 # 파일 백업 및 압축
 def process():
     file_backup_tar = f"{path_temp_backup}/jenkinsJobs.tar"
-    file_exclude = f"{path_target}/*/temp2.xlsx"
+    file_exclude = f"{path_target}/builds"
     subprocess.run(["tar", "cvfP", file_backup_tar, "--exclude", file_exclude, path_target])
     upload(file_backup_tar)
 
