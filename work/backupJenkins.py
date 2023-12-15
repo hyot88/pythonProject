@@ -31,13 +31,14 @@ def init(_profile):
     else:
         path_target = '/hanmail/.jenkins/jobs'
         path_temp_backup = '/hanmail/working/hyot/backup_temp'
-        path_upload = '/backup/jenkins'
+        path_upload = '/backup/jenkins1'
+        # path_upload = '/backup/jenkins2'
 
 
 # 파일 백업 및 압축
 def process():
     file_backup_tar = f"{path_temp_backup}/jenkinsJobs.tar"
-    file_exclude = f"{path_target}/builds"
+    file_exclude = f"{path_target}/*/builds"
     subprocess.run(["tar", "cvfP", file_backup_tar, "--exclude", file_exclude, path_target])
     upload(file_backup_tar)
 
@@ -47,7 +48,9 @@ def upload(_file_backup_tar):
     if profile == 'local':
         pass
     else:
+        subprocess.run(["hadoop", "fs", "-mkdir", f"{path_upload}/{today_str}"])
         subprocess.run(["hadoop", "fs", "-put", _file_backup_tar, f"{path_upload}/{today_str}"])
+        print(f"{_file_backup_tar} 업로드 완료")
         os.remove(_file_backup_tar)
 
 
@@ -81,5 +84,5 @@ def folder_organize():
 
 init(profile)
 process()
-# folder_organize()
+folder_organize()
 print("Jenkins 백업 스크립트를 종료합니다.")
