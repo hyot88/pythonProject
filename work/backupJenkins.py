@@ -37,7 +37,7 @@ def init(_profile):
 
 # 파일 백업 및 압축
 def process():
-    file_backup_tar = f"{path_temp_backup}/jenkinsJobs.tar"
+    file_backup_tar = f"{path_temp_backup}/jenkinsJobs_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.tar"
     file_exclude = f"{path_target}/*/builds"
     subprocess.run(["tar", "cvfP", file_backup_tar, "--exclude", file_exclude, path_target])
     upload(file_backup_tar)
@@ -67,7 +67,8 @@ def folder_organize():
             if td.days > 21:
                 shutil.rmtree(f"{path_upload}/{folder}")
     else:
-        result = subprocess.run(['hadoop', 'fs', '-ls', '-C', path_upload], stdout=subprocess.PIPE, text=True)
+        # result = subprocess.run(['hadoop', 'fs', '-ls', '-C', path_upload], stdout=subprocess.PIPE, text=True)
+        result = subprocess.run(['hadoop', 'fs', '-ls', '-C', path_upload], stdout=subprocess.PIPE, universal_newlines=True)
         folderList = result.stdout.split("\n")
         folderList = list(filter(lambda x: re.compile("/backup/[0-9]{8}").match(x), folderList))
 
