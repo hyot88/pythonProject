@@ -98,7 +98,7 @@ def folder_organize():
             td = (datetime.datetime(today_datetime.year, today_datetime.month, today_datetime.day)
                   - datetime.datetime.strptime(folder, '%Y%m%d'))
 
-            if td.days > 21:
+            if td.days > 28:
                 shutil.rmtree(f"{path_upload}/{folder}")
     else:
         result = subprocess.run(['hadoop', 'fs', '-ls', '-C', path_upload], stdout=subprocess.PIPE, text=True)
@@ -110,7 +110,7 @@ def folder_organize():
             td = (datetime.datetime(today_datetime.year, today_datetime.month, today_datetime.day)
                   - datetime.datetime.strptime(date, '%Y%m%d'))
 
-            if td.days > 21:
+            if td.days > 28:
                 subprocess.run(["hadoop", "fs", "-rm", "-r", folder])
 
     print("하둡 폴더 정리가 완료되었습니다.")
