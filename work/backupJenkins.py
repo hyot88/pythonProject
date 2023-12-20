@@ -64,7 +64,7 @@ def folder_organize():
             td = (datetime.datetime(today_datetime.year, today_datetime.month, today_datetime.day)
                   - datetime.datetime.strptime(folder, '%Y%m%d'))
 
-            if td.days > 21:
+            if td.days > 28:
                 shutil.rmtree(f"{path_upload}/{folder}")
     else:
         # subprocess.run 함수에서 text 인자는 python 3.7 부터 지원, jenkins 서버는 3.6 사용하므로 다른 옵션으로 대체
@@ -78,7 +78,7 @@ def folder_organize():
             td = (datetime.datetime(today_datetime.year, today_datetime.month, today_datetime.day)
                   - datetime.datetime.strptime(date, '%Y%m%d'))
 
-            if td.days > 21:
+            if td.days > 28:
                 subprocess.run(["hadoop", "fs", "-rm", "-r", folder])
 
     print("하둡 폴더 정리가 완료되었습니다.")
